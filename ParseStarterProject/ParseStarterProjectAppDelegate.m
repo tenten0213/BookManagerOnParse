@@ -1,4 +1,3 @@
-// Copyright 2013 Parse, Inc. All rights reserved.
 
 #import "Parse/Parse.h"
 #import "ParseStarterProjectAppDelegate.h"

@@ -1,4 +1,3 @@
-// Copyright 2013 Parse, Inc. All rights reserved.
 
 #import <UIKit/UIKit.h>
 #import "ParseStarterProjectAppDelegate.h"
