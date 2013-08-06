@@ -9,6 +9,7 @@
 
 @implementation MyTableController
 
+/*
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -32,11 +33,27 @@
     }
     return self;
 }
+ */
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
+    // The className to query on
+    self.parseClassName = @"Book";
+    
+    // The key of the PFObject to display in the label of the default cell style
+    self.textKey = @"title";
+    
+    // Whether the built-in pull-to-refresh is enabled
+    self.pullToRefreshEnabled = YES;
+    
+    // Whether the built-in pagination is enabled
+    self.paginationEnabled = YES;
+    
+    // The number of objects to show per page
+    self.objectsPerPage = 5;
+    
     [super viewDidLoad];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -44,6 +61,7 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.tableView.delegate = self;
 }
 
 - (void)viewDidUnload
@@ -113,11 +131,17 @@
         query.cachePolicy = kPFCachePolicyCacheThenNetwork;
     }
  
-    [query orderByAscending:@"priority"];
+    [query orderByAscending:@"title"];
  
     return query;
 }
 
+/*
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return [self.objects count] / 2;
+}
+ */
 
 
  // Override to customize the look of a cell representing an object. The default is to display
@@ -126,13 +150,27 @@
  static NSString *CellIdentifier = @"Cell";
  
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
+    
+    UILabel *titleLabel = (UILabel*)[cell viewWithTag:1];
+    UILabel *statusLabel = (UILabel*)[cell viewWithTag:2];
+    UIImageView *imageView = (UIImageView*)[cell viewWithTag:3];
+    titleLabel.text = [object objectForKey:@"title"];
+    statusLabel.text= [object objectForKey:@"status"];
+    PFFile *imageFile = [object objectForKey:@"image"];
+    [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        UIImage *image = [UIImage imageWithData:data];
+        [imageView setImage:image];
+    }];
+    
+    
+    // if (cell == nil) {
+        //cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    //    cell = self.tableViewCell;
+    //}
  
     // Configure the cell
-    cell.textLabel.text = [object objectForKey:@"text"];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"Priority: %@", [object objectForKey:@"priority"]];
+    //cell.textLabel.text = [object objectForKey:@"title"];
+    //cell.detailTextLabel.text = [object objectForKey:@"description"];
  
     return cell;
 }
@@ -209,8 +247,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"Select %d", indexPath.row);
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
 
+- (void)dealloc {
+    [_tableViewCell release];
+    [super dealloc];
+}
 @end

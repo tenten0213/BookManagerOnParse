@@ -9,4 +9,6 @@
 
 @interface MyTableController : PFQueryTableViewController
 
+@property (retain, nonatomic) IBOutlet UITableViewCell *tableViewCell;
+
 @end
