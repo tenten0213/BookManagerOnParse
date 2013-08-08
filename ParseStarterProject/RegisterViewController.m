@@ -7,6 +7,7 @@
 //
 
 #import "RegisterViewController.h"
+#import "StatusTableViewController.h"
 
 @interface RegisterViewController ()
 
@@ -20,10 +21,7 @@
     if (self) {
         // Custom initialization
         book = [[Book alloc] init];
-//        book.title = @"";
-//        book.description = @"";
-//        book.author= @"";
-        book.status = (NSString*)kBookStatusNormal;
+        book.status = (NSString*)kBookStatusWish;
         book.purchased= [NSDate date];
     }
     return self;
@@ -48,6 +46,28 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSLog(@"prepareForSegue: %@", segue.identifier);
+    
+    
+    if ([segue.identifier isEqualToString:@"Status"]) {
+        StatusTableViewController *statusTableViewController = segue.destinationViewController;
+        statusTableViewController.book = book;
+        statusTableViewController.registerViewController = self;
+    }
+    else if ([segue.identifier isEqualToString:@"Purchased"]) {
+        //segue.destinationViewController setHappiness:0];
+    }
+    
+}
+
+
+-(void)refreshStatus
+{
+    [self.inputStatus setTitle:book.status forState:UIControlStateNormal];
 }
 
 

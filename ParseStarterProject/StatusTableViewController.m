@@ -7,7 +7,6 @@
 //
 
 #import "StatusTableViewController.h"
-#import "Book.h"
 
 @interface StatusTableViewController ()
 
@@ -27,9 +26,6 @@
         NSMutableDictionary *statusWish = [[NSMutableDictionary alloc] initWithObjectsAndKeys: kBookStatusWish,@"text",@NO,@"check",nil];
         
         statusArray = [[NSArray alloc] initWithObjects:statusNormal,statusOnLoan,statusWish, nil];
-        NSLog(@"%@",statusArray);
-        NSMutableDictionary *dictionary = [statusArray objectAtIndex:0];
-        [dictionary setObject:@YES forKey:@"check"];
         
     }
     return self;
@@ -39,17 +35,28 @@
 }
 - (IBAction)doneSelectStatus:(id)sender {
     
+    for (NSMutableDictionary *dictionary in statusArray) {
+        NSString *text = [dictionary objectForKey:@"text"];
+        NSNumber *check = [dictionary objectForKey:@"check"];
+        
+        if ([check boolValue]) {
+            self.book.status = text;
+            [self.registerViewController refreshStatus];
+        }
+    }
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    for (NSMutableDictionary *dictionary in statusArray) {
+        NSString *text = [dictionary objectForKey:@"text"];
+        if ([self.book.status isEqualToString:text]) {
+            [dictionary setObject:@YES forKey:@"check"];
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning

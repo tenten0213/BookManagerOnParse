@@ -19,4 +19,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *inputStatus;
 @property (retain, nonatomic) IBOutlet UIButton *inputPurchased;
 
+-(void)refreshStatus;
+
 @end
